@@ -35,5 +35,10 @@ private void btnAdd_Click(object sender, EventArgs e)
             };
             users.Add(u);
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+        }
     }
 }

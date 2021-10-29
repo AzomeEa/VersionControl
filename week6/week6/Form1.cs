@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using week6.Entities;
 using week6.MnbServiceReference;
 
@@ -20,7 +21,7 @@ namespace week6
             InitializeComponent();
             Currencylekerdezes();
             dataGridView1.DataSource = Rates;
-
+            XMLFeldolgozas();
         }
 
         void Currencylekerdezes()
@@ -34,6 +35,28 @@ namespace week6
             };
             var response = mnbService.GetExchangeRates(request);
             var result = response.GetExchangeRatesResult;
+        }
+        string result;
+
+        void XMLFeldolgozas()
+        {
+            var xml = new XmlDocument();
+            xml.LoadXml(result);
+            foreach (XmlElement element in xml.DocumentElement)
+            {
+                var rate = new RateData();
+                Rates.Add(rate);
+                // Dátum
+                rate.Date = DateTime.Parse(element.GetAttribute("date"));
+                // Valuta
+                var childElement = (XmlElement)element.ChildNodes[0];
+                rate.Currency = childElement.GetAttribute("curr");
+                // Érték
+                var unit = decimal.Parse(childElement.GetAttribute("unit"));
+                var value = decimal.Parse(childElement.InnerText);
+                if (unit != 0)
+                    rate.Value = value / unit;
+            }
         }
     }
 }

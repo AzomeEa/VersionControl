@@ -37,6 +37,14 @@ namespace week6
             var response = mnbService.GetExchangeRates(request);
             var result = response.GetExchangeRatesResult;
         }
+
+        private void RefreshData()
+        {
+            Rates.Clear();
+            dataGridView1.DataSource = Rates;
+            XMLFeldolgozas();
+            DataOnDiagram();
+        }
         string result;
 
         void XMLFeldolgozas()
@@ -60,6 +68,8 @@ namespace week6
             }
         }
 
+
+
         void DataOnDiagram()
         {
             chartRateData.DataSource = Rates;
@@ -78,5 +88,20 @@ namespace week6
             chartArea.AxisY.IsStartedFromZero = false;
 
         }
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
     }
 }

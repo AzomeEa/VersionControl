@@ -17,12 +17,16 @@ namespace week6
     public partial class Form1 : Form
     {
         BindingList<RateData> Rates = new BindingList<RateData>();
+        BindingList<string> Currencies = new BindingList<string>();
+
         public Form1()
         {
             InitializeComponent();
+            comboBox1.DataSource = Currencies;
             Currencylekerdezes();
             dataGridView1.DataSource = Rates;
             XMLFeldolgozas();
+            RefreshData();
         }
 
         void Currencylekerdezes()
@@ -55,16 +59,17 @@ namespace week6
             {
                 var rate = new RateData();
                 Rates.Add(rate);
-                // Dátum
+
                 rate.Date = DateTime.Parse(element.GetAttribute("date"));
-                // Valuta
                 var childElement = (XmlElement)element.ChildNodes[0];
+                if (childElement == null) continue;
                 rate.Currency = childElement.GetAttribute("curr");
-                // Érték
                 var unit = decimal.Parse(childElement.GetAttribute("unit"));
                 var value = decimal.Parse(childElement.InnerText);
                 if (unit != 0)
+                {
                     rate.Value = value / unit;
+                }
             }
         }
 

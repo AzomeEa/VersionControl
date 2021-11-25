@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using System;
 using System.Activities;
 using System.Collections.Generic;
@@ -6,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using UnitTestExample.Abstractions;
 using UnitTestExample.Controllers;
+using UnitTestExample.Entities;
 
 namespace UnitTestExample
 {
@@ -47,14 +50,19 @@ namespace UnitTestExample
         }
 
         [
-    Test,
-    TestCase("irf@uni-corvinus.hu", "Abcd1234"),
-    TestCase("irf@uni-corvinus.hu", "Abcd1234567"),
-]
+            Test,
+            TestCase("irf@uni-corvinus.hu", "Abcd1234"),
+            TestCase("irf@uni-corvinus.hu", "Abcd1234567"),
+        ]
         public void TestRegisterHappyPath(string email, string password)
         {
             // Arrange
+            var accontServiceMock = new Mock<IAccountManager>(MockBehavior.Strict);
+            accontServiceMock
+                .Setup(m => m.CreateAccount(It.IsAny<Account>()))
+                .Returns<Account>(a => a);
             var accountController = new AccountController();
+            accountController.AccountManager = accontServiceMock.Object;
 
             // Act
             var actualResult = accountController.Register(email, password);
@@ -87,7 +95,8 @@ namespace UnitTestExample
             catch (Exception ex)
             {
                 Assert.IsInstanceOf<ValidationException>(ex);
-            // Assert
+                // Assert
+            }
         }
     }
 }

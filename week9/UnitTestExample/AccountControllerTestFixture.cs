@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnitTestExample.Controllers;
 
@@ -35,5 +36,13 @@ namespace UnitTestExample
             TestCase("Ab1234", false),
             TestCase("Abcd1234", true)
         ]
+        public bool TestValidatePassword(string password)
+        {
+            var lowercase = new Regex(@"[a-z]+");
+            var uppercase = new Regex(@"[A-Z]+");
+            var number = new Regex(@"[0-9]+");
+            var eightLong = new Regex(@".{8,}");
+            return lowercase.IsMatch(password) && uppercase.IsMatch(password) && number.IsMatch(password) && eightLong.IsMatch(password);
+        }
     }
 }
